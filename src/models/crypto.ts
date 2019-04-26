@@ -16,23 +16,26 @@ export namespace Crypto {
       this.value = key;
     }
 
-    public encrypt(data: string, privateKey: PrivateKey): string {
-      const publicKeyBuffer = naclutil.decodeBase64(this.value);
-      const privateKeyBuffer = naclutil.decodeBase64(privateKey.toString());
+    public decrypt(data: string): string {
+      const publicKeyBuffer = this.toBuffer();
+      const signedMessageBuffer = naclutil.decodeBase64(data);
 
-      const nonce = newNonce();
-      const messageUint8 = naclutil.decodeUTF8(data);
-      const box = nacl.box(messageUint8, nonce, publicKeyBuffer, privateKeyBuffer);
+      const signature = nacl.sign.detached.verify()
+      const message = nacl.sign.open(signedMessageBuffer, publicKeyBuffer);
 
-      const fullMessage = new Uint8Array(nonce.length + box.length);
-      fullMessage.set(nonce);
-      fullMessage.set(box, nonce.length);
+      if (!message) {
+        throw new Error('Could not decrypt message');
+      }
 
-      return naclutil.encodeBase64(fullMessage);
+      return naclutil.encodeUTF8(message);
     }
 
     public toString(): string {
       return this.value;
+    }
+
+    public toBuffer(): Uint8Array {
+      return naclutil.decodeBase64(this.value);
     }
   }
 
@@ -43,28 +46,24 @@ export namespace Crypto {
       this.value = key;
     }
 
-    public decrypt(data: string, publicKey: PublicKey): string {
-      const privateKeyBuffer = naclutil.decodeBase64(this.value);
-      const publicKeyBuffer = naclutil.decodeBase64(publicKey.toString());
+    public encrypt(data: string): string {
+      const privateKeyBuffer = this.toBuffer();
+      const messageBuffer = naclutil.decodeUTF8(data);
 
-      const messageWithNonceAsUint8Array = naclutil.decodeBase64(data);
-      const nonce = messageWithNonceAsUint8Array.slice(0, nacl.box.nonceLength);
-      const message = messageWithNonceAsUint8Array.slice(
-        nacl.box.nonceLength,
-        data.length
-      );
+      const signedMessage = nacl.sign(messageBuffer, privateKeyBuffer);
+      const signature = nacl.sign.detached(messageBuffer, privateKeyBuffer);
 
-      const decrypted = nacl.box.open(message, nonce, publicKeyBuffer, privateKeyBuffer);
+      const encryptedMessage = new Uint8Array(signature.byteLength + signedMessage.byteLength)
 
-      if (!decrypted) {
-        throw new Error('Could not decrypt message');
-      }
-
-      return naclutil.encodeUTF8(decrypted);
+      return naclutil.encodeBase64(encryptedMessage);
     }
 
     public toString(): string {
       return this.value;
+    }
+
+    public toBuffer(): Uint8Array {
+      return naclutil.decodeBase64(this.value);
     }
   }
 
@@ -79,7 +78,7 @@ export namespace Crypto {
   }
 
   export function generateKeyPair(): Keypair {
-    const keypair = nacl.box.keyPair();
+    const keypair = nacl.sign.keyPair();
     const publicKey = naclutil.encodeBase64(keypair.publicKey);
     const privateKey = naclutil.encodeBase64(keypair.secretKey);
 

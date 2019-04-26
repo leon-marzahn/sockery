@@ -37,7 +37,7 @@ export class SecureSocket {
   // Crypto Functions //////////////////////////////////////////////////////////////////////////////////////////////////
 
   public encrypt(payload: string): PacketData {
-    const encryptedAesKey = this.clientPublicKey.encrypt(this.aesKey, this.keypair.privateKey);
+    const encryptedAesKey = this.clientPublicKey.encrypt(this.aesKey);
     return {
       aes: encryptedAesKey,
       data: Crypto.encryptAes(payload, this.aesKey)
