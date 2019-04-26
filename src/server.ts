@@ -7,18 +7,18 @@ import { Logger } from './logger';
 export class Server {
   public sockets: SecureSocket[] = [];
 
-  private app: express.Express;
+  private expressApp: express.Express;
   private readonly httpServer: http.Server;
-  private io: SocketIO.Server;
+  private socketIO: SocketIO.Server;
 
   public constructor() {
-    this.app = express();
+    this.expressApp = express();
     this.httpServer = http.createServer();
-    this.io = SocketIO.listen(this.httpServer);
+    this.socketIO = SocketIO.listen(this.httpServer);
   }
 
   public listen(port: number): void {
-    this.io.on('connection', this.onConnection);
+    this.socketIO.on('connection', this.onConnection);
 
     this.httpServer.listen(port, () => {
       Logger.info('Initialized.');
@@ -26,16 +26,17 @@ export class Server {
   }
 
   private onConnection(socket: SocketIO.Socket): void {
-    const sSocket = new SecureSocket(socket);
-    this.sockets.push(sSocket);
+    const secureSocket = new SecureSocket(socket);
+    this.sockets.push(secureSocket);
 
-    socket.on('disconnect', () => this.onDisconnected(sSocket))
+    secureSocket.initialize();
+
+    socket.on('disconnect', () => this.onDisconnected(secureSocket))
   }
 
-  private onDisconnected(sSocket: SecureSocket): void {
-    const i = this.sockets.indexOf(sSocket);
-    this.sockets.splice(i, 1);
+  private onDisconnected(secureSocket: SecureSocket): void {
+    this.sockets.splice(this.sockets.indexOf(secureSocket), 1);
 
-    Logger.info(`${sSocket.getCustomId()} disconnected.`);
+    Logger.info(`${secureSocket.getCustomId()} disconnected.`);
   }
 }

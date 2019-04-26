@@ -7,11 +7,15 @@ export class SecureSocket {
 
   private socket: SocketIO.Socket;
   private keypair: Crypto.Keypair;
-  private readonly aesKey: string;
+  private aesKey: string;
+
   private clientPublicKey: Crypto.PublicKey;
 
   public constructor(socket: SocketIO.Socket) {
     this.socket = socket;
+  }
+
+  public initialize(): void {
     this.keypair = Crypto.generateKeyPair();
     this.aesKey = Crypto.generateAesKey(128);
   }

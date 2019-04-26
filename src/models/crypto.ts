@@ -10,14 +10,14 @@ export namespace Crypto {
   }
 
   export class PublicKey {
-    private readonly key: string;
+    private readonly value: string;
 
     public constructor(key: string) {
-      this.key = key;
+      this.value = key;
     }
 
     public encrypt(data: string, privateKey: PrivateKey): string {
-      const publicKeyBuffer = naclutil.decodeBase64(this.key);
+      const publicKeyBuffer = naclutil.decodeBase64(this.value);
       const privateKeyBuffer = naclutil.decodeBase64(privateKey.toString());
 
       const nonce = newNonce();
@@ -32,19 +32,19 @@ export namespace Crypto {
     }
 
     public toString(): string {
-      return this.key;
+      return this.value;
     }
   }
 
   export class PrivateKey {
-    private readonly key: string;
+    private readonly value: string;
 
     public constructor(key: string) {
-      this.key = key;
+      this.value = key;
     }
 
     public decrypt(data: string, publicKey: PublicKey): string {
-      const privateKeyBuffer = naclutil.decodeBase64(this.key);
+      const privateKeyBuffer = naclutil.decodeBase64(this.value);
       const publicKeyBuffer = naclutil.decodeBase64(publicKey.toString());
 
       const messageWithNonceAsUint8Array = naclutil.decodeBase64(data);
@@ -57,14 +57,14 @@ export namespace Crypto {
       const decrypted = nacl.box.open(message, nonce, publicKeyBuffer, privateKeyBuffer);
 
       if (!decrypted) {
-        throw new Error("Could not decrypt message");
+        throw new Error('Could not decrypt message');
       }
 
       return naclutil.encodeUTF8(decrypted);
     }
 
     public toString(): string {
-      return this.key;
+      return this.value;
     }
   }
 

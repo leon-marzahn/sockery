@@ -3,5 +3,5 @@
     "src"
   ],
   "ext": "ts",
-  "exec": "ts-node src/development.ts"
+  "exec": "ts-node development.ts"
 }

@@ -8,9 +8,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node src/index.ts",
+    "start": "ts-node development.ts",
     "watch": "nodemon --watch",
-    "debug": "node --inspect --require ts-node/register src/development.ts",
+    "debug": "node --inspect --require ts-node/register development.ts",
     "lint": "tslint"
   },
   "devDependencies": {
