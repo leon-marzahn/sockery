@@ -30,6 +30,10 @@ export class SecureSocket {
     this.customId = customId;
   }
 
+  public getSocket(): SocketIO.Socket {
+    return this.socket;
+  }
+
   public getSocketId(): string {
     return this.socket.id;
   }
@@ -57,5 +61,21 @@ export class SecureSocket {
   public decryptData(payload: PacketData): any {
     const stringData = this.decrypt(payload);
     return JSON.parse(stringData);
+  }
+
+  // Ack Functions /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public returnUnencrypted(code: number, payload: any, ack: Function): void {
+    ack({
+      code,
+      payload
+    });
+  }
+
+  public returnEncrypted(code: number, payload: any, ack: Function): void {
+    ack(this.encryptData({
+      code,
+      payload
+    }));
   }
 }
