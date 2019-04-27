@@ -2,79 +2,24 @@ import * as nacl from 'tweetnacl';
 import * as naclutil from 'tweetnacl-util';
 import * as aesjs from 'aes-js';
 
+import { PublicKey as PublicKeyImport } from './public-key';
+import { PrivateKey as PrivateKeyImport } from './private-key';
+import { Keypair as KeypairImport } from './keypair';
+
 export namespace Crypto {
   /// RSA //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  export function newNonce () {
+  export function newNonce() {
     return nacl.randomBytes(nacl.secretbox.nonceLength);
   }
 
-  export class PublicKey {
-    private readonly value: string;
-
-    public constructor(key: string) {
-      this.value = key;
-    }
-
-    public decrypt(data: string): string {
-      const publicKeyBuffer = this.toBuffer();
-      const signedMessageBuffer = naclutil.decodeBase64(data);
-
-      const signature = nacl.sign.detached.verify()
-      const message = nacl.sign.open(signedMessageBuffer, publicKeyBuffer);
-
-      if (!message) {
-        throw new Error('Could not decrypt message');
-      }
-
-      return naclutil.encodeUTF8(message);
-    }
-
-    public toString(): string {
-      return this.value;
-    }
-
-    public toBuffer(): Uint8Array {
-      return naclutil.decodeBase64(this.value);
-    }
+  export class PublicKey extends PublicKeyImport {
   }
 
-  export class PrivateKey {
-    private readonly value: string;
-
-    public constructor(key: string) {
-      this.value = key;
-    }
-
-    public encrypt(data: string): string {
-      const privateKeyBuffer = this.toBuffer();
-      const messageBuffer = naclutil.decodeUTF8(data);
-
-      const signedMessage = nacl.sign(messageBuffer, privateKeyBuffer);
-      const signature = nacl.sign.detached(messageBuffer, privateKeyBuffer);
-
-      const encryptedMessage = new Uint8Array(signature.byteLength + signedMessage.byteLength)
-
-      return naclutil.encodeBase64(encryptedMessage);
-    }
-
-    public toString(): string {
-      return this.value;
-    }
-
-    public toBuffer(): Uint8Array {
-      return naclutil.decodeBase64(this.value);
-    }
+  export class PrivateKey extends PrivateKeyImport {
   }
 
-  export class Keypair {
-    public publicKey: PublicKey;
-    public privateKey: PrivateKey;
-
-    public constructor(publicKey: PublicKey, privateKey: PrivateKey) {
-      this.publicKey = publicKey;
-      this.privateKey = privateKey;
-    }
+  export class Keypair extends KeypairImport {
   }
 
   export function generateKeyPair(): Keypair {

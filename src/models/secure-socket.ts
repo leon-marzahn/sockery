@@ -22,11 +22,11 @@ export class SecureSocket {
 
   // Getters and Setters ///////////////////////////////////////////////////////////////////////////////////////////////
 
-  public getCustomId(): string {
+  public getId(): string {
     return (this.customId && this.customId.length > 0) ? this.customId : this.getSocketId();
   }
 
-  public setCustomId(customId: string): void {
+  public setId(customId: string): void {
     this.customId = customId;
   }
 
@@ -37,7 +37,7 @@ export class SecureSocket {
   // Crypto Functions //////////////////////////////////////////////////////////////////////////////////////////////////
 
   public encrypt(payload: string): PacketData {
-    const encryptedAesKey = this.clientPublicKey.encrypt(this.aesKey);
+    const encryptedAesKey = this.keypair.privateKey.encrypt(this.aesKey);
     return {
       aes: encryptedAesKey,
       data: Crypto.encryptAes(payload, this.aesKey)
@@ -47,5 +47,15 @@ export class SecureSocket {
   public encryptData(payload: any): PacketData {
     const stringData = JSON.stringify(payload);
     return this.encrypt(stringData);
+  }
+
+  public decrypt(payload: PacketData): string {
+    const decryptedAesKey = this.clientPublicKey.decrypt(payload.aes);
+    return Crypto.decryptAes(payload.data, decryptedAesKey);
+  }
+
+  public decryptData(payload: PacketData): any {
+    const stringData = this.decrypt(payload);
+    return JSON.parse(stringData);
   }
 }

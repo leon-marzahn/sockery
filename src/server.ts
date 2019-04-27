@@ -4,6 +4,11 @@ import * as SocketIO from 'socket.io';
 import { SecureSocket } from './models';
 import { Logger } from './logger';
 
+export enum SocketIOEvent {
+  CONNECTION = 'connection',
+  DISCONNECT = 'disconnect'
+}
+
 export class Server {
   public sockets: SecureSocket[] = [];
 
@@ -18,7 +23,7 @@ export class Server {
   }
 
   public listen(port: number): void {
-    this.socketIO.on('connection', this.onConnection);
+    this.socketIO.on(SocketIOEvent.CONNECTION, this.onConnection);
 
     this.httpServer.listen(port, () => {
       Logger.info('Initialized.');
@@ -31,12 +36,12 @@ export class Server {
 
     secureSocket.initialize();
 
-    socket.on('disconnect', () => this.onDisconnected(secureSocket))
+    socket.on(SocketIOEvent.DISCONNECT, () => this.onDisconnected(secureSocket))
   }
 
   private onDisconnected(secureSocket: SecureSocket): void {
     this.sockets.splice(this.sockets.indexOf(secureSocket), 1);
 
-    Logger.info(`${secureSocket.getCustomId()} disconnected.`);
+    Logger.info(`${secureSocket.getId()} disconnected.`);
   }
 }
