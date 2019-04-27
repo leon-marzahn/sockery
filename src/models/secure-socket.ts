@@ -6,18 +6,18 @@ export class SecureSocket {
   private customId: string = '';
 
   private socket: SocketIO.Socket;
-  private keypair: Crypto.Keypair;
+  private keypair: Crypto.RSA.Keypair;
   private aesKey: string;
 
-  private clientPublicKey: Crypto.PublicKey;
+  private clientPublicKey: Crypto.RSA.PublicKey;
 
   public constructor(socket: SocketIO.Socket) {
     this.socket = socket;
   }
 
   public initialize(): void {
-    this.keypair = Crypto.generateKeyPair();
-    this.aesKey = Crypto.generateAesKey(128);
+    this.keypair = Crypto.RSA.generateKeyPair();
+    this.aesKey = Crypto.AES.generateKey(128);
   }
 
   // Getters and Setters ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,10 +37,10 @@ export class SecureSocket {
   // Crypto Functions //////////////////////////////////////////////////////////////////////////////////////////////////
 
   public encrypt(payload: string): PacketData {
-    const encryptedAesKey = this.keypair.privateKey.encrypt(this.aesKey);
+    const encryptedAesKey = this.clientPublicKey.encrypt(this.aesKey, this.keypair.privateKey);
     return {
       aes: encryptedAesKey,
-      data: Crypto.encryptAes(payload, this.aesKey)
+      data: Crypto.AES.encrypt(payload, this.aesKey)
     } as PacketData;
   }
 
@@ -50,8 +50,8 @@ export class SecureSocket {
   }
 
   public decrypt(payload: PacketData): string {
-    const decryptedAesKey = this.clientPublicKey.decrypt(payload.aes);
-    return Crypto.decryptAes(payload.data, decryptedAesKey);
+    const decryptedAesKey = this.keypair.privateKey.decrypt(payload.aes);
+    return Crypto.AES.decrypt(payload.data, decryptedAesKey);
   }
 
   public decryptData(payload: PacketData): any {

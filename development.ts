@@ -4,17 +4,17 @@ import { Crypto } from './src';
 // server.listen(8082);
 
 console.time('Generate KeyPair');
-const keypair: Crypto.Keypair = Crypto.generateKeyPair();
+const keypair: Crypto.RSA.Keypair = Crypto.RSA.generateKeyPair();
 console.timeEnd('Generate KeyPair');
 
 const message = 'Hello fren, how is your day going?';
 
 console.time('Encrypt Message');
-const encryptedMessage = keypair.privateKey.encrypt(message);
+const encryptedMessage = keypair.publicKey.encrypt(message, keypair.privateKey);
 console.timeEnd('Encrypt Message');
 console.log('Encrypted Message:', encryptedMessage);
 
 console.time('Decrypt Message');
-const decryptedMessage = keypair.publicKey.decrypt(encryptedMessage);
+const decryptedMessage = keypair.privateKey.decrypt(encryptedMessage);
 console.timeEnd('Decrypt Message');
 console.log('Decrypted Message:', decryptedMessage);
