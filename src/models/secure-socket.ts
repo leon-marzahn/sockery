@@ -5,7 +5,7 @@ import { PacketData } from './packet-data';
 export class SecureSocket {
   private customId: string = '';
 
-  private socket: SocketIO.Socket;
+  private readonly socket: SocketIO.Socket;
   private keypair: Crypto.RSA.Keypair;
   private aesKey: string;
 

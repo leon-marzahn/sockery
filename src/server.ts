@@ -3,6 +3,7 @@ import * as http from 'http';
 import * as SocketIO from 'socket.io';
 import { SecureSocket } from './models';
 import { Logger } from './logger';
+import { Listener } from './models/listener';
 
 export enum SocketIOEvent {
   CONNECTION = 'connection',
@@ -11,6 +12,7 @@ export enum SocketIOEvent {
 
 export class Server {
   public sockets: SecureSocket[] = [];
+  public listeners: Listener[] = [];
 
   private expressApp: express.Express;
   private readonly httpServer: http.Server;
@@ -23,6 +25,8 @@ export class Server {
   }
 
   public listen(port: number): void {
+    // ToDo: Add standard listeners (Handshake)
+
     this.socketIO.on(SocketIOEvent.CONNECTION, this.onConnection);
 
     this.httpServer.listen(port, () => {
@@ -30,11 +34,19 @@ export class Server {
     });
   }
 
+  public addListeners(listeners: Listener[]): void {
+    this.listeners.push(...listeners);
+  }
+
   private onConnection(socket: SocketIO.Socket): void {
     const secureSocket = new SecureSocket(socket);
     this.sockets.push(secureSocket);
 
     secureSocket.initialize();
+
+    this.listeners.forEach(listener => {
+      listener.initialize(secureSocket);
+    });
 
     socket.on(SocketIOEvent.DISCONNECT, () => this.onDisconnected(secureSocket))
   }
