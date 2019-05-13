@@ -3,13 +3,12 @@ import { Crypto } from './crypto';
 import { PacketData } from './packet-data';
 
 export class SecureSocket {
-  private customId: string = '';
+  public keypair: Crypto.RSA.Keypair;
+  public aesKey: string;
+  public clientPublicKey: Crypto.RSA.PublicKey;
 
   private readonly socket: SocketIO.Socket;
-  private keypair: Crypto.RSA.Keypair;
-  private aesKey: string;
-
-  private clientPublicKey: Crypto.RSA.PublicKey;
+  private customId: string = '';
 
   public constructor(socket: SocketIO.Socket) {
     this.socket = socket;
