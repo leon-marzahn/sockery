@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { Crypto, SecureSocket, Server } from './src';
+import { Crypto, Server } from './src';
 
 const server = new Server();
 server.addListeners([]);
