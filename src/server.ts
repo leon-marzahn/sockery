@@ -10,6 +10,8 @@ export enum SocketIOEvent {
   DISCONNECT = 'disconnect'
 }
 
+import * as defaultListeners from './listeners';
+
 export class Server {
   public sockets: SecureSocket[] = [];
   public listeners: Listener[] = [];
@@ -25,9 +27,7 @@ export class Server {
   }
 
   public listen(port: number): void {
-    // ToDo: Add standard listeners (Handshake)
-
-    this.socketIO.on(SocketIOEvent.CONNECTION, this.onConnection);
+    this.socketIO.on(SocketIOEvent.CONNECTION, socket => this.onConnection(socket));
 
     this.httpServer.listen(port, () => {
       Logger.info('Initialized.');
@@ -44,9 +44,11 @@ export class Server {
 
     secureSocket.initialize();
 
-    this.listeners.forEach(listener => {
-      listener.initialize(secureSocket);
-    });
+    for (const listener in defaultListeners) {
+      const listenerInstance: Listener = new (defaultListeners as any)[listener](secureSocket);
+      listenerInstance.initialize();
+      this.listeners.push(listenerInstance);
+    }
 
     socket.on(SocketIOEvent.DISCONNECT, () => this.onDisconnected(secureSocket))
   }

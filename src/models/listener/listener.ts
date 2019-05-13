@@ -18,9 +18,11 @@ export abstract class Listener {
 
   public abstract getOptions(): ListenerOptions;
 
-  public initialize(secureSocket: SecureSocket): void {
+  public constructor(secureSocket: SecureSocket) {
     this.secureSocket = secureSocket;
+  }
 
+  public initialize(): void {
     this.secureSocket.getSocket().on(this.getOptions().event, (payload: any, ack: Function) => {
       if (this.getOptions().encrypted) {
         payload = this.secureSocket.decryptData(payload);
