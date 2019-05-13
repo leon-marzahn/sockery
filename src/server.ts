@@ -44,6 +44,7 @@ export class Server {
 
     secureSocket.initialize();
 
+    // ToDo: Add subscribers to listener instead of this
     for (const listener in defaultListeners) {
       const listenerInstance: Listener = new (defaultListeners as any)[listener](secureSocket);
       listenerInstance.initialize();
