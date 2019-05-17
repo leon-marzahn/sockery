@@ -14,46 +14,40 @@ const rateLimiter = new RateLimiterMemory({
 const secretKey: string = 'VerySecretKeyLmao';
 
 export abstract class Listener {
-  public secureSocket: SecureSocket;
-
   public abstract getOptions(): ListenerOptions;
 
-  public constructor(secureSocket: SecureSocket) {
-    this.secureSocket = secureSocket;
-  }
-
-  public initialize(): void {
-    this.secureSocket.getSocket().on(this.getOptions().event, (payload: any, ack: Function) => {
+  public initializeSocket(secureSocket: SecureSocket): void {
+    secureSocket.getSocket().on(this.getOptions().event, (payload: any, ack: Function) => {
       if (this.getOptions().encrypted) {
-        payload = this.secureSocket.decryptData(payload);
+        payload = secureSocket.decryptData(payload);
       }
 
       if (this.getOptions().limit) {
-        if (this.executeMiddlewareManager(MiddlewareType.BEFORE_RATE_LIMIT, payload, ack)) {
-          this.consumeRateLimit(payload, ack)
+        if (this.executeMiddlewareManager(secureSocket, MiddlewareType.BEFORE_RATE_LIMIT, payload, ack)) {
+          this.consumeRateLimit(secureSocket, payload, ack)
         }
       } else {
-        this.consume(payload, ack);
+        this.consume(secureSocket, payload, ack);
       }
     });
   }
 
-  private consume(payload: any, ack: Function): void {
+  private consume(secureSocket: SecureSocket, payload: any, ack: Function): void {
     if (this.getOptions().tokenProtected) {
-      this.tokenExecute(payload, ack);
+      this.tokenExecute(secureSocket, payload, ack);
     } else {
-      if (this.executeMiddlewareManager(MiddlewareType.BEFORE_EXECUTE, payload, ack)) {
-        this.execute(payload, ack);
+      if (this.executeMiddlewareManager(secureSocket, MiddlewareType.BEFORE_EXECUTE, payload, ack)) {
+        this.execute(secureSocket, payload, ack);
       }
     }
   }
 
-  private consumeRateLimit(payload: any, ack: Function): void {
-    rateLimiter.consume(this.secureSocket.getSocketId(), 1).then(() => {
-      this.consume(payload, ack);
+  private consumeRateLimit(secureSocket: SecureSocket, payload: any, ack: Function): void {
+    rateLimiter.consume(secureSocket.getSocketId(), 1).then(() => {
+      this.consume(secureSocket, payload, ack);
     }).catch(() => {
-      Logger.error(`Socket ${this.secureSocket.getId()} reached limit`);
-      this.secureSocket.returnEncrypted(
+      Logger.error(`Socket ${secureSocket.getId()} reached limit`);
+      secureSocket.returnEncrypted(
         500,
         {
           error: 'rate-limit'
@@ -63,13 +57,13 @@ export abstract class Listener {
     });
   }
 
-  protected abstract execute(payload: any, ack: Function): void;
+  protected abstract execute(secureSocket: SecureSocket, payload: any, ack: Function): void;
 
-  private tokenExecute(payload: any, ack: Function): void {
-    if (this.executeMiddlewareManager(MiddlewareType.BEFORE_TOKEN, payload, ack)) {
+  private tokenExecute(secureSocket: SecureSocket, payload: any, ack: Function): void {
+    if (this.executeMiddlewareManager(secureSocket, MiddlewareType.BEFORE_TOKEN, payload, ack)) {
       JWT.verify(payload.token, secretKey, (err: any, decoded: any) => {
         if (!err) {
-          this.secureSocket.returnEncrypted(
+          secureSocket.returnEncrypted(
             401,
             {
               error: 'invalid-token'
@@ -77,19 +71,24 @@ export abstract class Listener {
             ack
           );
         } else {
-          if (this.executeMiddlewareManager(MiddlewareType.BEFORE_EXECUTE, payload, ack)) {
-            this.execute(payload, ack);
+          if (this.executeMiddlewareManager(secureSocket, MiddlewareType.BEFORE_EXECUTE, payload, ack)) {
+            this.execute(secureSocket, payload, ack);
           }
         }
       });
     }
   }
 
-  private executeMiddlewareManager(type: MiddlewareType, payload: any, ack: Function): boolean {
+  private executeMiddlewareManager(
+    secureSocket: SecureSocket,
+    type: MiddlewareType,
+    payload: any,
+    ack: Function
+  ): boolean {
     return MiddlewareManager.execute(
       this.getOptions().middleware || [],
       type,
-      this.secureSocket,
+      secureSocket,
       payload,
       ack
     );

@@ -1,1 +1,1 @@
-export * from './HandshakeListener';
+export * from './handshake-listener';
