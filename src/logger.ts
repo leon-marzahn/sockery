@@ -9,7 +9,7 @@ const loggerFormat = printf(info => {
   return `(${timestamp}) [${info.label}] ${info.level}: ${info.message}`;
 });
 
-const logger: WinstonLogger = winston.createLogger({
+export const logger: WinstonLogger = winston.createLogger({
   level: 'info',
   format: combine(
     label({ label: 'Server' }),
