@@ -1,10 +1,11 @@
-import express = require('express');
+import express from 'express';
 import * as http from 'http';
 import * as SocketIO from 'socket.io';
 import { SecureSocket } from './models';
 import { Logger } from './logger';
 import { Listener } from './models/listener';
 import { find } from 'lodash';
+import { EventExistsException } from './exceptions';
 
 export enum SocketIOEvent {
   CONNECTION = 'connection',
@@ -12,7 +13,6 @@ export enum SocketIOEvent {
 }
 
 import * as defaultListeners from './listeners';
-import { EventExistsException } from './exceptions';
 
 export class Server {
   public sockets: SecureSocket[] = [];
