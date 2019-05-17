@@ -1,5 +1,4 @@
-import { Logger as WinstonLogger, default as winston } from 'winston';
-
+import { Logger as WinstonLogger } from 'winston';
 import { Logger, logger as winstonLogger } from './logger';
 
 describe('Logger', () => {
@@ -13,7 +12,7 @@ describe('Logger', () => {
     spyOn(logger, 'add').and.stub();
 
     Logger.enableProd();
-    
+
     expect(logger.add).toHaveBeenCalledTimes(2);
   });
 
