@@ -1,4 +1,4 @@
-import { Listener, ListenerOptions, Crypto, SecureSocket } from '../../models';
+import { Listener, ListenerOptions, Crypto, ServerSecureSocket } from '../../models';
 
 export class HandshakeListener extends Listener {
   public getOptions = (): ListenerOptions => ({
@@ -6,8 +6,8 @@ export class HandshakeListener extends Listener {
     limit: true
   });
 
-  protected execute(secureSocket: SecureSocket, payload: any, ack: Function): void {
-    secureSocket.clientPublicKey = new Crypto.RSA.PublicKey(payload.publicKey);
+  protected execute(secureSocket: ServerSecureSocket, payload: any, ack: Function): void {
+    secureSocket.partnerPublicKey = new Crypto.RSA.PublicKey(payload.publicKey);
     ack({
       publicKey: secureSocket.keypair.publicKey.toString()
     });

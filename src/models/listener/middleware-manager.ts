@@ -1,12 +1,12 @@
 import { Middleware, MiddlewareType } from './middleware';
 import { filter } from 'lodash';
-import { SecureSocket } from '../secure-socket';
+import { ServerSecureSocket } from '../server-secure-socket';
 
 export class MiddlewareManager {
   public static execute(
     middleware: Middleware[],
     type: MiddlewareType,
-    secureSocket: SecureSocket,
+    secureSocket: ServerSecureSocket,
     payload: any, ack: Function
   ): boolean {
     filter(middleware, middleware => middleware.type === type).forEach(middlware => {

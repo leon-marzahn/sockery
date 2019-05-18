@@ -12,6 +12,9 @@ module.exports = {
   unmockedModulePathPatterns: [
     '/node_modules/'
   ],
+  coveragePathIgnorePatterns: [
+    'index.ts'
+  ],
   collectCoverageFrom: [
     '**/*.ts'
   ],

@@ -1,16 +1,15 @@
 import * as SocketIO from 'socket.io';
 import { Crypto } from './crypto';
-import { PacketData } from './packet-data';
+import { PacketPayload } from './packet-payload';
 
-export class SecureSocket {
+export abstract class SecureSocket {
   public keypair: Crypto.RSA.Keypair;
   public aesKey: string;
-  public clientPublicKey: Crypto.RSA.PublicKey;
+  public partnerPublicKey: Crypto.RSA.PublicKey;
 
-  private readonly socket: SocketIO.Socket;
-  private customId: string = '';
+  protected readonly socket: SocketIO.Socket | SocketIOClient.Socket;
 
-  public constructor(socket: SocketIO.Socket) {
+  protected constructor(socket: SocketIO.Socket | SocketIOClient.Socket) {
     this.socket = socket;
   }
 
@@ -21,15 +20,7 @@ export class SecureSocket {
 
   // Getters and Setters ///////////////////////////////////////////////////////////////////////////////////////////////
 
-  public getId(): string {
-    return (this.customId && this.customId.length > 0) ? this.customId : this.getSocketId();
-  }
-
-  public setId(customId: string): void {
-    this.customId = customId;
-  }
-
-  public getSocket(): SocketIO.Socket {
+  public getSocket(): SocketIO.Socket | SocketIOClient.Socket {
     return this.socket;
   }
 
@@ -39,42 +30,26 @@ export class SecureSocket {
 
   // Crypto Functions //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public encrypt(payload: string): PacketData {
-    const encryptedAesKey = this.clientPublicKey.encrypt(this.aesKey, this.keypair.privateKey);
+  public encrypt(payload: string): PacketPayload {
+    const encryptedAesKey = this.partnerPublicKey.encrypt(this.aesKey, this.keypair.privateKey);
     return {
       aes: encryptedAesKey,
-      data: Crypto.AES.encrypt(payload, this.aesKey)
-    } as PacketData;
+      payload: Crypto.AES.encrypt(payload, this.aesKey)
+    } as PacketPayload;
   }
 
-  public encryptData(payload: any): PacketData {
-    const stringData = JSON.stringify(payload);
-    return this.encrypt(stringData);
+  public encryptPayload(payload: any): PacketPayload {
+    const stringPayload = JSON.stringify(payload);
+    return this.encrypt(stringPayload);
   }
 
-  public decrypt(payload: PacketData): string {
+  public decrypt(payload: PacketPayload): string {
     const decryptedAesKey = this.keypair.privateKey.decrypt(payload.aes);
-    return Crypto.AES.decrypt(payload.data, decryptedAesKey);
+    return Crypto.AES.decrypt(payload.payload, decryptedAesKey);
   }
 
-  public decryptData(payload: PacketData): any {
-    const stringData = this.decrypt(payload);
-    return JSON.parse(stringData);
-  }
-
-  // Ack Functions /////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  public returnUnencrypted(code: number, payload: any, ack: Function): void {
-    ack({
-      code,
-      payload
-    });
-  }
-
-  public returnEncrypted(code: number, payload: any, ack: Function): void {
-    ack(this.encryptData({
-      code,
-      payload
-    }));
+  public decryptPayload(payload: PacketPayload): any {
+    const stringPayload = this.decrypt(payload);
+    return JSON.parse(stringPayload);
   }
 }

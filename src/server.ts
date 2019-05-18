@@ -1,11 +1,11 @@
 import express from 'express';
 import * as http from 'http';
 import * as SocketIO from 'socket.io';
-import { SecureSocket } from './models';
 import { Logger } from './logger';
 import { Listener } from './models/listener';
 import { find } from 'lodash';
 import { EventExistsException } from './exceptions';
+import { ServerSecureSocket } from './models';
 
 export enum SocketIOEvent {
   CONNECTION = 'connection',
@@ -15,7 +15,7 @@ export enum SocketIOEvent {
 import * as defaultListeners from './listeners';
 
 export class Server {
-  public sockets: SecureSocket[] = [];
+  public sockets: ServerSecureSocket[] = [];
   public listeners: Listener[] = [];
 
   private expressApp: express.Express;
@@ -57,7 +57,7 @@ export class Server {
   }
 
   private onConnection(socket: SocketIO.Socket): void {
-    const secureSocket = new SecureSocket(socket);
+    const secureSocket = new ServerSecureSocket(socket);
     this.sockets.push(secureSocket);
 
     secureSocket.initialize();
@@ -68,7 +68,7 @@ export class Server {
     socket.on(SocketIOEvent.DISCONNECT, () => this.onDisconnected(secureSocket))
   }
 
-  private onDisconnected(secureSocket: SecureSocket): void {
+  private onDisconnected(secureSocket: ServerSecureSocket): void {
     this.sockets.splice(this.sockets.indexOf(secureSocket), 1);
 
     Logger.info(`${secureSocket.getId()} disconnected.`);

@@ -1,4 +1,4 @@
-import { SecureSocket } from '../secure-socket';
+import { ServerSecureSocket } from '../server-secure-socket';
 
 export enum MiddlewareType {
   BEFORE_RATE_LIMIT,
@@ -13,9 +13,9 @@ export interface Middleware {
    * It is important that this function should execute the ack, IF the middleware forbids to proceed
    * This may change in the future, but now this is the best solution
    *
-   * @param secureSocket: SecureSocket
+   * @param secureSocket: ServerSecureSocket
    * @param payload: any
    * @param ack: Function
    */
-  execute(secureSocket: SecureSocket, payload: any, ack: Function): boolean;
+  execute(secureSocket: ServerSecureSocket, payload: any, ack: Function): boolean;
 }

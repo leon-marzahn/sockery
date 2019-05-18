@@ -1,9 +1,9 @@
-import { SecureSocket } from '../secure-socket';
 import { ListenerOptions } from './listener-options';
 import { Logger } from '../../logger';
 import * as JWT from 'jsonwebtoken';
 import { MiddlewareManager } from './middleware-manager';
 import { MiddlewareType } from './middleware';
+import { ServerSecureSocket } from '../server-secure-socket';
 
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 const rateLimiter = new RateLimiterMemory({
@@ -16,10 +16,10 @@ const secretKey: string = 'VerySecretKeyLmao';
 export abstract class Listener {
   public abstract getOptions(): ListenerOptions;
 
-  public initializeSocket(secureSocket: SecureSocket): void {
+  public initializeSocket(secureSocket: ServerSecureSocket): void {
     secureSocket.getSocket().on(this.getOptions().event, (payload: any, ack: Function) => {
       if (this.getOptions().encrypted) {
-        payload = secureSocket.decryptData(payload);
+        payload = secureSocket.decryptPayload(payload);
       }
 
       if (this.getOptions().limit) {
@@ -32,7 +32,7 @@ export abstract class Listener {
     });
   }
 
-  private consume(secureSocket: SecureSocket, payload: any, ack: Function): void {
+  private consume(secureSocket: ServerSecureSocket, payload: any, ack: Function): void {
     if (this.getOptions().tokenProtected) {
       this.tokenExecute(secureSocket, payload, ack);
     } else {
@@ -42,7 +42,7 @@ export abstract class Listener {
     }
   }
 
-  private consumeRateLimit(secureSocket: SecureSocket, payload: any, ack: Function): void {
+  private consumeRateLimit(secureSocket: ServerSecureSocket, payload: any, ack: Function): void {
     rateLimiter.consume(secureSocket.getSocketId(), 1).then(() => {
       this.consume(secureSocket, payload, ack);
     }).catch(() => {
@@ -57,9 +57,9 @@ export abstract class Listener {
     });
   }
 
-  protected abstract execute(secureSocket: SecureSocket, payload: any, ack: Function): void;
+  protected abstract execute(secureSocket: ServerSecureSocket, payload: any, ack: Function): void;
 
-  private tokenExecute(secureSocket: SecureSocket, payload: any, ack: Function): void {
+  private tokenExecute(secureSocket: ServerSecureSocket, payload: any, ack: Function): void {
     if (this.executeMiddlewareManager(secureSocket, MiddlewareType.BEFORE_TOKEN, payload, ack)) {
       JWT.verify(payload.token, secretKey, (err: any, decoded: any) => {
         if (!err) {
@@ -80,7 +80,7 @@ export abstract class Listener {
   }
 
   private executeMiddlewareManager(
-    secureSocket: SecureSocket,
+    secureSocket: ServerSecureSocket,
     type: MiddlewareType,
     payload: any,
     ack: Function

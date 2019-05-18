@@ -3,15 +3,15 @@ import * as naclutil from 'tweetnacl-util';
 import { Key } from './key';
 
 export class PrivateKey extends Key {
-  public decrypt(data: string): string {
+  public decrypt(payload: string): string {
     const privateKeyBuffer = this.toBuffer();
     const keypair = nacl.box.keyPair.fromSecretKey(privateKeyBuffer);
 
-    const messageWithNonceBuffer = naclutil.decodeBase64(data);
+    const messageWithNonceBuffer = naclutil.decodeBase64(payload);
     const nonce = messageWithNonceBuffer.slice(0, nacl.box.nonceLength);
     const messageBuffer = messageWithNonceBuffer.slice(
       nacl.box.nonceLength,
-      data.length
+      payload.length
     );
 
     const decryptedMessageBuffer = nacl.box.open(messageBuffer, nonce, keypair.publicKey, keypair.secretKey);

@@ -23,8 +23,8 @@ export const logger: WinstonLogger = winston.createLogger({
 
 export class Logger {
   public static enableProd(): void {
-    logger.add(new winston.transports.File({filename: './logs/error.log', level: 'error'}));
-    logger.add(new winston.transports.File({filename: './logs/combined.log'}));
+    logger.add(new winston.transports.File({ filename: './logs/error.log', level: 'error' }));
+    logger.add(new winston.transports.File({ filename: './logs/combined.log' }));
   }
 
   public static info(message: string): void {

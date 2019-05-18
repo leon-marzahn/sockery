@@ -5,9 +5,9 @@ import { PrivateKey } from './private-key';
 import { RSA } from './index';
 
 export class PublicKey extends Key {
-  public encrypt(data: string, privateKey: PrivateKey): string {
+  public encrypt(payload: string, privateKey: PrivateKey): string {
     const publicKeyBuffer = this.toBuffer();
-    const messageBuffer = naclutil.decodeUTF8(data);
+    const messageBuffer = naclutil.decodeUTF8(payload);
     const nonce = RSA.newNonce();
     const box = nacl.box(messageBuffer, nonce, publicKeyBuffer, privateKey.toBuffer());
 

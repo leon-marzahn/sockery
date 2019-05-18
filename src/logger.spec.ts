@@ -8,6 +8,7 @@ describe('Logger', () => {
     logger = winstonLogger;
   });
 
+  /* ToDo: Make this not generate logs
   it('should enable prod', () => {
     spyOn(logger, 'add').and.stub();
 
@@ -15,6 +16,7 @@ describe('Logger', () => {
 
     expect(logger.add).toHaveBeenCalledTimes(2);
   });
+   */
 
   it('should log an info message', () => {
     spyOn(winstonLogger, 'info').and.stub();
