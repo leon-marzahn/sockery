@@ -1,4 +1,4 @@
-# Sockery
+# Sockery [![npm version](https://badge.fury.io/js/sockery.svg)](https://badge.fury.io/js/sockery) [![Build Status](https://travis-ci.org/PsychoPflanze/sockery.svg?branch=master)](https://travis-ci.org/PsychoPflanze/sockery) [![codecov](https://codecov.io/gh/PsychoPflanze/sockery/branch/master/graph/badge.svg)](https://codecov.io/gh/PsychoPflanze/sockery)
 
 ### Usage:
 ```
