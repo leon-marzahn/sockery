@@ -1,6 +1,6 @@
 {
   "name": "sockery",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Sockery Server",
   "author": {
     "name": "Leon Marzahn"
@@ -16,7 +16,7 @@
     "test": "jest",
     "codecov": "codecov",
     "lint": "tslint",
-    "publish-package": "npm-deploy-git-tag --tag latest"
+    "publish-package": "git push --tags && npm publish"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,6 @@
     "dist"
   ],
   "devDependencies": {
-    "@hutson/npm-deploy-git-tag": "^5.0.1",
     "@types/aes-js": "^3.1.0",
     "@types/express": "^4.16.1",
     "@types/jest": "^24.0.13",
