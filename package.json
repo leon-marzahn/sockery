@@ -2,7 +2,9 @@
   "name": "sockery",
   "version": "0.0.2",
   "description": "Sockery Server",
-  "author": "Leon Marzahn",
+  "author": {
+    "name": "Leon Marzahn"
+  },
   "license": "ISC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,16 +15,18 @@
     "debug": "node --inspect --require ts-node/register development.ts",
     "test": "jest",
     "codecov": "codecov",
-    "lint": "tslint"
+    "lint": "tslint",
+    "publish-package": "npm-deploy-git-tag --tag latest"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PsychoPflanze/sockery.git"
+    "url": "git+https://github.com/PsychoPflanze/sockery.git"
   },
   "files": [
     "dist"
   ],
   "devDependencies": {
+    "@hutson/npm-deploy-git-tag": "^5.0.1",
     "@types/aes-js": "^3.1.0",
     "@types/express": "^4.16.1",
     "@types/jest": "^24.0.13",
@@ -63,5 +67,11 @@
     "typeorm": "^0.2.16",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/PsychoPflanze/sockery/issues"
+  },
+  "readme": "ERROR: No README data found!",
+  "homepage": "https://github.com/PsychoPflanze/sockery#readme",
+  "_id": "sockery@0.0.2"
 }
