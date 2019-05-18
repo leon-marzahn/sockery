@@ -5,7 +5,7 @@ import { PacketPayload } from './packet-payload';
 export abstract class SecureSocket {
   public keypair: Crypto.RSA.Keypair;
   public aesKey: string;
-  public partnerPublicKey: Crypto.RSA.PublicKey;
+  public peerPublicKey: Crypto.RSA.PublicKey;
 
   protected readonly socket: SocketIO.Socket | SocketIOClient.Socket;
 
@@ -14,7 +14,7 @@ export abstract class SecureSocket {
   }
 
   public initialize(): void {
-    this.keypair = Crypto.RSA.generateKeyPair();
+    this.keypair = Crypto.RSA.generateKeypair();
     this.aesKey = Crypto.AES.generateKey(128);
   }
 
@@ -31,7 +31,7 @@ export abstract class SecureSocket {
   // Crypto Functions //////////////////////////////////////////////////////////////////////////////////////////////////
 
   public encrypt(payload: string): PacketPayload {
-    const encryptedAesKey = this.partnerPublicKey.encrypt(this.aesKey, this.keypair.privateKey);
+    const encryptedAesKey = this.peerPublicKey.encrypt(this.aesKey, this.keypair.privateKey);
     return {
       aes: encryptedAesKey,
       payload: Crypto.AES.encrypt(payload, this.aesKey)
@@ -44,7 +44,7 @@ export abstract class SecureSocket {
   }
 
   public decrypt(payload: PacketPayload): string {
-    const decryptedAesKey = this.keypair.privateKey.decrypt(payload.aes);
+    const decryptedAesKey = this.keypair.privateKey.decrypt(payload.aes, this.peerPublicKey);
     return Crypto.AES.decrypt(payload.payload, decryptedAesKey);
   }
 

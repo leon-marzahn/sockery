@@ -7,7 +7,7 @@ export class HandshakeListener extends Listener {
   });
 
   protected execute(secureSocket: ServerSecureSocket, payload: any, ack: Function): void {
-    secureSocket.partnerPublicKey = new Crypto.RSA.PublicKey(payload.publicKey);
+    secureSocket.peerPublicKey = new Crypto.RSA.PublicKey(payload.publicKey);
     ack({
       publicKey: secureSocket.keypair.publicKey.toString()
     });

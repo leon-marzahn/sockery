@@ -14,7 +14,7 @@ export namespace RSA {
     return nacl.randomBytes(nacl.secretbox.nonceLength);
   }
 
-  export function generateKeyPair(): Keypair {
+  export function generateKeypair(): Keypair {
     const keypair = nacl.box.keyPair();
     const publicKey = naclutil.encodeBase64(keypair.publicKey);
     const privateKey = naclutil.encodeBase64(keypair.secretKey);

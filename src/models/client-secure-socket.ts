@@ -16,7 +16,7 @@ export class ClientSecureSocket extends SecureSocket {
       this.emitUnencrypted('handshake', {
         publicKey: this.keypair.publicKey.toString()
       }, (payload: { publicKey: string }) => {
-        this.partnerPublicKey = new Crypto.RSA.PublicKey(payload.publicKey);
+        this.peerPublicKey = new Crypto.RSA.PublicKey(payload.publicKey);
       });
     });
   }

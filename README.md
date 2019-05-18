@@ -1,7 +1,7 @@
 # Sockery
 
 ### Usage:
-```typescript
+```
 import { Server } from 'sockery';
 
 const server = new Server();
@@ -11,7 +11,7 @@ server.listen(8082);
 
 ##### How to add listeners:
 
-```typescript
+```
 import { Listener, ListenerOptions } from 'sockery';
 
 export class TestListener extends Listener {
@@ -27,6 +27,6 @@ export class TestListener extends Listener {
 }
 
 const server = new Server();
-server.addListeners([TestListener]); // <-- ToDo: This is not done yet
+server.addListeners([new TestListener]);
 server.listen(8082);
 ```

@@ -2,9 +2,15 @@ import * as nacl from 'tweetnacl';
 import * as naclutil from 'tweetnacl-util';
 import { Key } from './key';
 import { PrivateKey } from './private-key';
-import { RSA } from './index';
+import { RSA } from './rsa';
 
 export class PublicKey extends Key {
+  /**
+   * Encrypts a payload via the peers public key and the senders private key
+   *
+   * @param payload: Payload to encrypt
+   * @param privateKey: Senders private key
+   */
   public encrypt(payload: string, privateKey: PrivateKey): string {
     const publicKeyBuffer = this.toBuffer();
     const messageBuffer = naclutil.decodeUTF8(payload);
