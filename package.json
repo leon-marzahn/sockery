@@ -12,6 +12,7 @@
     "watch": "nodemon --watch",
     "debug": "node --inspect --require ts-node/register development.ts",
     "test": "jest",
+    "codecov": "codecov",
     "lint": "tslint"
   },
   "repository": {
@@ -34,6 +35,7 @@
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
     "@types/uuid": "^3.4.4",
+    "codecov": "^3.5.0",
     "jest": "^24.8.0",
     "nodemon": "^1.18.11",
     "socket.io-client": "^2.2.0",
