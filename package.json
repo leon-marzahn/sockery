@@ -1,6 +1,6 @@
 {
   "name": "sockery",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Sockery Server",
   "author": "Leon Marzahn",
   "license": "ISC",
@@ -13,7 +13,8 @@
     "debug": "node --inspect --require ts-node/register development.ts",
     "test": "jest",
     "codecov": "codecov",
-    "lint": "tslint"
+    "lint": "tslint",
+    "publish": "npm publish"
   },
   "repository": {
     "type": "git",
