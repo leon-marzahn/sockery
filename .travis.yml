@@ -8,4 +8,4 @@ scripts:
   - npm install -g codecov
   - npm run test
 after_success:
-  - codecov --token="bd194f68-f594-42df-b733-f387a57b5a46"
+  - codecov  -f coverage/*.json
