@@ -13,8 +13,7 @@
     "debug": "node --inspect --require ts-node/register development.ts",
     "test": "jest",
     "codecov": "codecov",
-    "lint": "tslint",
-    "publish": "npm publish"
+    "lint": "tslint"
   },
   "repository": {
     "type": "git",
