@@ -5,7 +5,7 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     // "composite": true,                     /* Enable project compilation */
     // "incremental": true,                   /* Enable incremental compilation */
     // "tsBuildInfoFile": "./",               /* Specify file to store incremental compilation information */
@@ -33,7 +33,7 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node",
-    // "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
+    // "baseUrl": "./",
     // "paths": {},                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": [
