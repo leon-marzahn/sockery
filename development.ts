@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { Crypto, Server } from './src';
+import { Server } from './src';
 import { ClientSecureSocket } from './src/models/client-secure-socket';
 
 const server = new Server();
