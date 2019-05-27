@@ -2,7 +2,9 @@ import { SecureSocket } from './secure-socket';
 import * as SocketIO from 'socket.io';
 
 export class ServerSecureSocket extends SecureSocket {
-  private customId: string = '';
+  public customData: any;
+
+  private customId: string;
 
   protected socket: SocketIO.Socket;
 
