@@ -8,6 +8,13 @@
   "license": "ISC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PsychoPflanze/sockery.git"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "ts-node development.ts",
@@ -18,13 +25,28 @@
     "lint": "tslint",
     "publish-package": "git push --tags && npm publish"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PsychoPflanze/sockery.git"
+  "dependencies": {
+    "aes-js": "^3.1.2",
+    "express": "^4.16.4",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.25",
+    "mysql": "^2.17.1",
+    "randomstring": "^1.1.5",
+    "rate-limiter-flexible": "^1.0.1",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.5.3",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "ts-md5": "^1.2.4",
+    "tweetnacl": "^1.0.1",
+    "tweetnacl-util": "^0.15.0",
+    "typeorm": "^0.2.16",
+    "uuid": "^3.3.2",
+    "winston": "^3.2.1"
   },
-  "files": [
-    "dist"
-  ],
   "devDependencies": {
     "@types/aes-js": "^3.1.0",
     "@types/express": "^4.16.1",
@@ -41,36 +63,12 @@
     "codecov": "^3.5.0",
     "jest": "^24.8.0",
     "nodemon": "^1.18.11",
-    "socket.io-client": "^2.2.0",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"
   },
-  "dependencies": {
-    "aes-js": "^3.1.2",
-    "express": "^4.16.4",
-    "https": "^1.0.0",
-    "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.11",
-    "moment": "^2.24.0",
-    "moment-timezone": "^0.5.25",
-    "mysql": "^2.17.1",
-    "randomstring": "^1.1.5",
-    "rate-limiter-flexible": "^1.0.1",
-    "reflect-metadata": "^0.1.13",
-    "socket.io": "^2.2.0",
-    "ts-md5": "^1.2.4",
-    "tweetnacl": "^1.0.1",
-    "tweetnacl-util": "^0.15.0",
-    "typeorm": "^0.2.16",
-    "uuid": "^3.3.2",
-    "winston": "^3.2.1"
-  },
   "bugs": {
     "url": "https://github.com/PsychoPflanze/sockery/issues"
-  },
-  "readme": "ERROR: No README data found!",
-  "homepage": "https://github.com/PsychoPflanze/sockery#readme",
-  "_id": "sockery@0.0.2"
+  }
 }
