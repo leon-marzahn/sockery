@@ -4,3 +4,5 @@ export * from './listener';
 export * from './packet-payload';
 export * from './secure-socket';
 export * from './server-secure-socket';
+
+export * from './secure-socket-v2';
