@@ -3,16 +3,15 @@ import * as http from 'http';
 import * as SocketIO from 'socket.io';
 import { Logger } from './logger';
 import { Listener } from './models/listener';
-import { find } from 'lodash';
 import { EventExistsException } from './exceptions';
 import { ServerSecureSocket } from './models';
+
+import * as defaultListeners from './listeners';
 
 export enum SocketIOEvent {
   CONNECTION = 'connection',
   DISCONNECT = 'disconnect'
 }
-
-import * as defaultListeners from './listeners';
 
 export class Server {
   public sockets: ServerSecureSocket[] = [];
@@ -39,9 +38,7 @@ export class Server {
 
   public addListeners(listeners: Listener[]): void {
     listeners.forEach(listener => {
-      if (
-        find(this.listeners, thisListener => thisListener.getOptions().event === listener.getOptions().event)
-      ) {
+      if (this.listeners.find(x => x.getOptions().event === listener.getOptions().event)) {
         throw new EventExistsException();
       }
     });
@@ -62,10 +59,10 @@ export class Server {
 
     secureSocket.initialize();
     this.listeners.forEach(listener => {
-      listener.initializeSocket(secureSocket)
+      listener.initializeSocket(secureSocket);
     });
 
-    socket.on(SocketIOEvent.DISCONNECT, () => this.onDisconnected(secureSocket))
+    socket.on(SocketIOEvent.DISCONNECT, () => this.onDisconnected(secureSocket));
   }
 
   private onDisconnected(secureSocket: ServerSecureSocket): void {
